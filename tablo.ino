@@ -11,7 +11,7 @@
 #define STOP_PIN 15
 
 Adafruit_NeoPixel numbersStrip = Adafruit_NeoPixel(120, NUMBERS_PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel infoStrip = Adafruit_NeoPixel(240, INFO_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel infoStrip = Adafruit_NeoPixel(231, INFO_PIN, NEO_GRB + NEO_KHZ800);
 
 uint32_t RED_COLOR = infoStrip.Color(255, 0, 0);
 uint32_t GREEN_COLOR = infoStrip.Color(0, 255, 0);
@@ -24,6 +24,12 @@ int writeAArray [] = { 14, 15, 16, 17, 18, 19, 21, 24, 59, 62, 63, 66, 98, 99, 1
 int writeBArray [] = { 105, 106, 107, 108, 109, 110, 111, 140, 143,  146, 147, 150, 153, 182, 185, 188, 190, 191, 193, 194};
 int writeCArray [] = { 7, 8, 9, 10, 11, 29, 35, 48, 54, 71, 77, 91, 95 };
 int writeDArray [] = { 113, 114, 115, 116, 117, 118, 119, 132, 138, 155, 161, 174, 180, 198, 199, 200, 201, 202 };
+
+int writeI1Array [] = { 129, 163, 164, 165, 166, 167, 212, 228 };
+int writeI2Array [] = { 122, 130, 163, 167, 169, 172, 206, 207, 213, 226, 227, 228, 229, 230 };
+int writeI3Array [] = { 122, 130, 163, 169, 172, 206, 207, 209, 210, 214, 227, 228, 229 };
+int writeI4Array [] = { 121, 122, 123, 124,  127, 166, 169, 205, 206, 207, 208, 209, 210, 230 };
+int writeI5Array [] = { 121, 122, 123, 127, 130, 163, 166, 169, 172, 205, 209, 210, 214, 227, 228, 229 };  
 
 bool wasChanged = true;
 bool wasStarted = false;
@@ -77,14 +83,40 @@ void writeAB() {
 void writeCD() {
   writeC();
   writeD();
+
+  writeI5();
 }
 
 //int writeDArray [] = { 113, 114, 115, 116, 117, 118, 119, 132, 138, 155, 161, 174, 180, 198, 199, 200, 201, 202 };
 
 void writeI1() {
-  int writeI1Array [] = {  };
-  for (int i = 0; i < 11; i++) {
-    //infoStrip.setPixelColor(writeI1Array[i], infoColor);
+  for (int i = 0; i < 8; i++) {
+    infoStrip.setPixelColor(writeI1Array[i], infoColor);
+  }
+}
+
+void writeI2() {
+  for (int i = 0; i < 14; i++) {
+    infoStrip.setPixelColor(writeI2Array[i], infoColor);
+  }
+}
+
+void writeI3() {
+  
+  for (int i = 0; i < 13; i++) {
+    infoStrip.setPixelColor(writeI3Array[i], infoColor);
+  }
+}
+
+void writeI4() {
+  for (int i = 0; i < 14; i++) {
+    infoStrip.setPixelColor(writeI4Array[i], infoColor);
+  }
+}
+
+void writeI5() {
+  for (int i = 0; i < 16; i++) {
+    infoStrip.setPixelColor(writeI5Array[i], infoColor);
   }
 }
 
