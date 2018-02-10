@@ -51,28 +51,26 @@ void turnAllNumOff() {
   }
 }
 
-void writeA() {
-  for (int i = 0; i < 18; i++) {
-    infoStrip.setPixelColor(writeAArray[i], infoColor);
+void writeFromArray(int sArray [], int sSize) {
+  for (int i = 0; i < sSize; i++) {
+    infoStrip.setPixelColor(sArray[i], infoColor);
   }
+}
+
+void writeA() {
+  writeFromArray(writeAArray, sizeof(writeAArray) / sizeof(int));
 }
 
 void writeB() {
-  for (int i = 0; i < 20; i++) {
-    infoStrip.setPixelColor(writeBArray[i], infoColor);
-  }
+  writeFromArray(writeBArray, sizeof(writeBArray) / sizeof(int));
 }
 
 void writeC() {
-  for (int i = 0; i < 13; i++) {
-    infoStrip.setPixelColor(writeCArray[i], infoColor);
-  }
+  writeFromArray(writeCArray, sizeof(writeCArray) / sizeof(int));
 }
 
 void writeD() {  
-  for (int i = 0; i < 18; i++) {
-    infoStrip.setPixelColor(writeDArray[i], infoColor);
-  }
+  writeFromArray(writeDArray, sizeof(writeDArray) / sizeof(int));
 }
 
 void writeAB() {
@@ -90,34 +88,23 @@ void writeCD() {
 //int writeDArray [] = { 113, 114, 115, 116, 117, 118, 119, 132, 138, 155, 161, 174, 180, 198, 199, 200, 201, 202 };
 
 void writeI1() {
-  for (int i = 0; i < 8; i++) {
-    infoStrip.setPixelColor(writeI1Array[i], infoColor);
-  }
+  writeFromArray(writeI1Array, sizeof(writeI1Array) / sizeof(int));
 }
 
 void writeI2() {
-  for (int i = 0; i < 14; i++) {
-    infoStrip.setPixelColor(writeI2Array[i], infoColor);
-  }
+  writeFromArray(writeI2Array, sizeof(writeI2Array) / sizeof(int));
 }
 
 void writeI3() {
-  
-  for (int i = 0; i < 13; i++) {
-    infoStrip.setPixelColor(writeI3Array[i], infoColor);
-  }
+  writeFromArray(writeI3Array, sizeof(writeI3Array) / sizeof(int));
 }
 
 void writeI4() {
-  for (int i = 0; i < 14; i++) {
-    infoStrip.setPixelColor(writeI4Array[i], infoColor);
-  }
+  writeFromArray(writeI4Array, sizeof(writeI4Array) / sizeof(int));
 }
 
 void writeI5() {
-  for (int i = 0; i < 16; i++) {
-    infoStrip.setPixelColor(writeI5Array[i], infoColor);
-  }
+  writeFromArray(writeI5Array, sizeof(writeI5Array) / sizeof(int));
 }
 
 void write0(int offset) {  
