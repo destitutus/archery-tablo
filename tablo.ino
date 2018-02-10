@@ -9,6 +9,8 @@
 
 #define START_PIN 14
 #define STOP_PIN 15
+#define NEXT_PIN 16
+#define MODE_PIN 17
 
 Adafruit_NeoPixel numbersStrip = Adafruit_NeoPixel(120, NUMBERS_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel infoStrip = Adafruit_NeoPixel(231, INFO_PIN, NEO_GRB + NEO_KHZ800);
@@ -36,13 +38,126 @@ int writeI8Array [] = { 122, 123, 125, 127, 130, 163, 166, 169, 172, 206, 207, 2
 int writeI9Array [] = { 122, 123, 127, 130, 163, 166, 169, 172, 206, 207, 209, 210, 226, 228, 227, 229 };
 int writeI10Array [] = { 122, 123, 124, 125, 130, 163,  172, 206, 207, 208, 209, 210, 214, 228, 227, 229, 38, 42, 43, 44, 45, 46, 218, 223 };
 
+/**
+ * AB / CD - 120
+ * AB -- 120
+ * AB / CD - 240
+ * AB - 240
+ */
+
+int MODES_COUNT = 4;
+int currMode = 0;
+int currRound = 1;
+int currStep = 0;
+
+int sDuration [] = { 120, 120, 240, 240};
+bool useCD [] = { true, false, true, false};
+int sRounds [] = { 10, 10, 6, 6};
+bool isAB = true;
+
 bool wasChanged = true;
 bool wasStarted = false;
 bool isPrepare = true;
 
+unsigned long nextButtonClick = 0;
+
 unsigned long toneActiveTill = 0;
 
 int countDown = 10;
+
+void nextRound() {
+  if (useCD[currMode] && currRound % 2 == 1) {
+    isAB = false;
+  } if (useCD[currMode] && currRound % 2 == 0) {
+    isAB = true;
+  }
+
+  currStep++;
+
+  bool needIncRound = !useCD[currMode] || (currStep % 2 == 0 && currStep != 0);
+  
+  if (needIncRound) {
+    currRound++;
+    if (currRound > sRounds[currMode]) {
+      currRound = 1;
+      currStep = 0;
+    }
+  }
+}
+
+void drawInfo() {
+  turnAllInfoOff();
+  writeRound();
+  if (isAB) {
+    writeAB();
+  } else {
+    writeCD();
+  }
+  wasChanged = true;
+  draw();
+}
+
+void writeRound() {
+  switch (currRound) {
+    case 10:
+      writeI10();
+      break;
+    case 1:
+      writeI1();
+      break;
+    case 2:
+      writeI2();
+      break;
+    case 3:
+      writeI3();
+      break;
+    case 4:
+      writeI4();
+      break;
+    case 5:
+      writeI5();
+      break;
+    case 6:
+      writeI6();
+      break;
+    case 7:
+      writeI7();
+      break;
+    case 8:
+      writeI8();
+      break;
+    case 9:
+      writeI9();
+      break;     
+  }
+}
+
+void selectMode() {
+  currMode++;
+  if (currMode == MODES_COUNT) {
+    currMode = 0;
+  }
+  currRound = 1;
+  currStep = 0;
+  wasChanged = true;
+  countDown = sDuration[currMode];
+
+  turnAllInfoOff();
+  writeI1();
+  writeAB();
+  if (useCD[currMode]) {
+    writeCD();
+  }
+  draw();
+  beep();
+  delay(2000);
+  turnAllInfoOff();
+  countDown = 0;  
+  writeI1();
+  writeAB();
+  wasChanged = true;
+  draw();
+}
 
 void turnAllInfoOff() {
   for (int i=0; i < infoStrip.numPixels(); i++) {
@@ -86,8 +201,6 @@ void writeAB() {
 void writeCD() {
   writeC();
   writeD();
-
-  writeI10();
 }
 
 void writeI1() {
@@ -285,7 +398,7 @@ void setup() {
   Serial.println("setup");
   infoStrip.begin();
   turnAllInfoOff();
-  infoStrip.setBrightness(128);
+  //infoStrip.setBrightness(128);
   infoStrip.show();
 
   numbersStrip.begin();
@@ -294,9 +407,13 @@ void setup() {
 
   pinMode(START_PIN, INPUT);
   pinMode(STOP_PIN, INPUT);
+  pinMode(NEXT_PIN, INPUT);
+  pinMode(MODE_PIN, INPUT);
 
   wasChanged = true;
   countDown = 0;
+  writeAB();
+  writeI1();
   draw();
 }
 
@@ -329,6 +446,9 @@ void stop() {
   timer_stop_ISR(TIMER_DEFAULT);
   draw();  
   beep();
+
+  nextRound();
+  drawInfo();
 }
 
 void start() {
@@ -343,11 +463,6 @@ void start() {
 }
 
 void draw() {
-    //writeA();
-    //writeB();
-
-    writeCD();
-  
     infoStrip.show();
  
     writeNum(countDown);
@@ -366,18 +481,34 @@ void loop() {
     stop();
   }
 
+  int modeSignal = digitalRead(MODE_PIN);
+  if (modeSignal == HIGH && !wasStarted && nextButtonClick < millis()) {
+    nextButtonClick  = millis() + 350;
+    Serial.println("Select mode");
+    selectMode();
+  }
+
+  int nextSignal = digitalRead(NEXT_PIN);
+  if (nextSignal == HIGH && !wasStarted && nextButtonClick < millis()) {
+    nextButtonClick  = millis() + 350;
+    nextRound();
+    drawInfo();
+    Serial.println("Select next");
+  }
+
   if (wasStarted) {
     if (wasChanged) {
       draw();
     }
-    if (countDown == 120) {
+    if (countDown == sDuration[currMode]) {
       beep();
     }
     if (countDown == 0) {
       if (isPrepare) {
         isPrepare = false;
-        countDown = 120;
+        countDown = sDuration[currMode];
         numberColor = GREEN_COLOR;          
+        draw();
       } else {
         stop();
       }
