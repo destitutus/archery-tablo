@@ -21,10 +21,10 @@ uint32_t infoColor = infoStrip.Color(255, 0, 0);
 uint32_t numberColor = numbersStrip.Color(255, 0, 0);
 
 int writeAArray [] = { 14, 15, 16, 17, 18, 19, 21, 24, 59, 62, 63, 66, 98, 99, 100, 101, 102, 103 };
+int writeBArray [] = { 105, 106, 107, 108, 109, 110, 111, 140, 143,  146, 147, 150, 153, 182, 185, 188, 190, 191, 193, 194};
 int writeCArray [] = { 7, 8, 9, 10, 11, 29, 35, 48, 54, 71, 77, 91, 95 };
-int writeI0Array [] = { 0, 1, 2, 3, 37, 46, 79, 84, 85, 86, 87 };
+int writeDArray [] = { 113, 114, 115, 116, 117, 118, 119, 132, 138, 155, 161, 174, 180, 198, 199, 200, 201, 202 };
 
-bool wasChanged = true;
 bool wasChanged = true;
 bool wasStarted = false;
 bool isPrepare = true;
@@ -51,23 +51,41 @@ void writeA() {
   }
 }
 
+void writeB() {
+  for (int i = 0; i < 20; i++) {
+    infoStrip.setPixelColor(writeBArray[i], infoColor);
+  }
+}
+
 void writeC() {
   for (int i = 0; i < 13; i++) {
     infoStrip.setPixelColor(writeCArray[i], infoColor);
   }
 }
 
-void writeB() {
-  int writeBArray [] = { 96, 97, 98, 99, 100, 101, 124 };
-  for (int i = 0; i < 8; i++) {
-    infoStrip.setPixelColor(writeBArray[i], infoColor);
+void writeD() {  
+  for (int i = 0; i < 18; i++) {
+    infoStrip.setPixelColor(writeDArray[i], infoColor);
   }
 }
 
-void writeI0() {
-  /*for (int i = 0; i < 11; i++) {
-    infoStrip.setPixelColor(writeI0Array[i], infoColor);
-  }*/
+void writeAB() {
+  writeA();
+  writeB();
+}
+
+void writeCD() {
+  writeC();
+  writeD();
+}
+
+//int writeDArray [] = { 113, 114, 115, 116, 117, 118, 119, 132, 138, 155, 161, 174, 180, 198, 199, 200, 201, 202 };
+
+void writeI1() {
+  int writeI1Array [] = {  };
+  for (int i = 0; i < 11; i++) {
+    //infoStrip.setPixelColor(writeI1Array[i], infoColor);
+  }
 }
 
 void write0(int offset) {  
@@ -283,8 +301,10 @@ void start() {
 }
 
 void draw() {
-    writeA();
-    writeB();
+    //writeA();
+    //writeB();
+
+    writeCD();
   
     infoStrip.show();
  
