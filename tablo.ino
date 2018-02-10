@@ -34,6 +34,7 @@ int writeI6Array [] = { 122, 123, 124, 125, 127, 130, 163, 166, 169, 172, 206, 2
 int writeI7Array [] = { 121, 130, 163, 172, 205, 206, 207, 169, 167, 213, 226 };
 int writeI8Array [] = { 122, 123, 125, 127, 130, 163, 166, 169, 172, 206, 207, 209, 210, 214, 228, 227, 229 };
 int writeI9Array [] = { 122, 123, 127, 130, 163, 166, 169, 172, 206, 207, 209, 210, 226, 228, 227, 229 };
+int writeI10Array [] = { 122, 123, 124, 125, 130, 163,  172, 206, 207, 208, 209, 210, 214, 228, 227, 229, 38, 42, 43, 44, 45, 46, 218, 223 };
 
 bool wasChanged = true;
 bool wasStarted = false;
@@ -86,7 +87,7 @@ void writeCD() {
   writeC();
   writeD();
 
-  writeI9();
+  writeI10();
 }
 
 void writeI1() {
@@ -123,6 +124,10 @@ void writeI8() {
 
 void writeI9() {
   writeFromArray(writeI9Array, sizeof(writeI9Array) / sizeof(int));
+}
+
+void writeI10() {
+  writeFromArray(writeI10Array, sizeof(writeI10Array) / sizeof(int));
 }
 
 void write0(int offset) {  
