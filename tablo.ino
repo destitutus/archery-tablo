@@ -149,7 +149,7 @@ void selectMode() {
     writeCD();
   }
   draw();
-  beep();
+  beep(1);
   delay(2000);
   turnAllInfoOff();
   countDown = 0;  
@@ -417,10 +417,28 @@ void setup() {
   draw();
 }
 
-void beep() {
-  toneActiveTill = millis() + 500;
-  tone(BUZZER_PIN, 262, 600);  
-  delay(600);
+void beep(int count) {
+  Serial.print("count");
+  Serial.println(count);
+
+  if (count == 1) {
+    tone(BUZZER_PIN, 262, 500);
+    delay(700);
+  }
+  if (count == 2) {
+    tone(BUZZER_PIN, 262, 350);
+    delay(600);
+    tone(BUZZER_PIN, 262, 350);
+    delay(250);
+  }
+  if (count == 3) {
+    tone(BUZZER_PIN, 262, 350);
+    delay(600);
+    tone(BUZZER_PIN, 262, 350);
+    delay(600);
+    tone(BUZZER_PIN, 262, 350);
+    delay(600);
+  }
 }
 
 void checkBeep() {
@@ -438,17 +456,32 @@ void timer_handle_interrupts(int timer) {
 }
 
 void stop() {  
-  countDown = 0;    
+  countDown = 0;
   numberColor = RED_COLOR;
   wasChanged = true;  
   wasStarted = false;
   isPrepare = true;
   timer_stop_ISR(TIMER_DEFAULT);
-  draw();  
-  beep();
+
+  bool needNextRound = useCD[currMode] && currStep % 2 == 0 ;
+
+  if (needNextRound) {
+    countDown = 10;
+    draw();
+  } else {
+    draw();
+    beep(3);
+  }
 
   nextRound();
   drawInfo();
+
+  Serial.print("currStep");
+  Serial.println(currStep);
+
+  if (needNextRound) {
+    start();
+  }
 }
 
 void start() {
@@ -458,7 +491,7 @@ void start() {
   numberColor = RED_COLOR;
   timer_init_ISR_1Hz(TIMER_DEFAULT);  
   draw();
-  beep();
+  beep(2);
   Serial.println("Start signal");
 }
 
@@ -499,22 +532,19 @@ void loop() {
   if (wasStarted) {
     if (wasChanged) {
       draw();
-    }
-    if (countDown == sDuration[currMode]) {
-      beep();
-    }
+    }    
     if (countDown == 0) {
       if (isPrepare) {
         isPrepare = false;
         countDown = sDuration[currMode];
         numberColor = GREEN_COLOR;          
         draw();
+        Serial.println("Beep here");
+        beep(1);
       } else {
         stop();
       }
-      
     }
   }
-
   checkBeep();
 }
